@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://kit.fontawesome.com/96c75676d8.js" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<title>Drop It</title>
+<style>
+    .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 100px;
+        padding: 20px;
+    }
+    .order-summary, .payment-methods, .delivery-address {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .order-summary {
+        flex: 1;
+        margin-right: 20px;
+    }
+    .order-summary img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+    .order-summary .item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .order-summary .details {
+        flex: 1;
+    }
+    .order-summary .details .price {
+        color: #333;
+    }
+    .order-summary .summary {
+        margin-top: 20px;
+    }
+    .order-summary .summary div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .payment-methods, .delivery-address {
+        flex: 1;
+    }
+    .payment-methods h2, .delivery-address h2 {
+        margin-bottom: 20px;
+    }
+    .payment-methods .method, .delivery-address .method {
+        margin-bottom: 10px;
+    }
+    .payment-methods .method input, .delivery-address .method input {
+        margin-right: 10px;
+    }
+    .payment-methods .card-details {
+        display: none;
+        flex-direction: column;
+        margin-top: 10px;
+    }
+    .payment-methods .card-details input {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    .payment-methods .card-details .card-number {
+        display: flex;
+        justify-content: space-between;
+    }
+    .payment-methods .card-details .card-number input {
+        width: 30%;
+    }
+    .payment-methods button, .delivery-address button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #3BB77E;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+    .payment-methods button:hover, .delivery-address button:hover {
+        background-color: #2a8f62;
+    }
+    .hidden {
+        display: none;
+    }
+    .back-arrow {
+        cursor: pointer;
+        color: #3BB77E;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+    }
+    .back-arrow:hover {
+        color: #2a8f62;
+    }
+    .contact-form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+    .contact-form-group.two-column {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .contact-form-group.two-column > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 48%;
+    }
+    .contact-form-group label {
+        margin-bottom: 5px;
+    }
+    .contact-form-group input {
+        width: 95%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .error {
+        color: red;
+        margin-bottom: 15px;
+    }
+    .progress {
+        display: flex;
+        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .progress .step {
+        display: flex;
+        margin-left: 25px;
+        align-items: center;
+    }
+
+    .progress .step i {
+        font-size: 20px;
+        margin-right: 10px;
+        color: #ccc;
+    }
+
+    .progress .step.completed i {
+        color: #3BB77E;
+    }
+
+    .progress .step.current i {
+        color: #3BB77E;
+    }
+
+    .progress .step span {
+        margin-left: 10px;
+    }
+
+
+   
+    /* Global Reset for Box-Sizing */
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Ensure the layout is responsive */
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Quicksand', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 50px auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 1200px;
+    }
+
+    .order-summary, .payment-methods, .delivery-address {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    /* Adjust for larger screens */
+    @media (min-width: 768px) {
+        .order-summary, .delivery-address, .payment-methods {
+            width: 48%;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .order-summary {
+            width: 60%;
+        }
+        .delivery-address, .payment-methods {
+            width: 35%;
+        }
+    }
+
+    /* Flexbox tweaks for layout */
+    .order-summary .item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .order-summary .item img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .order-summary .summary div, 
+    .progress .step {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .progress {
+        margin: 20px 0;
+    }
+
+    /* Typography */
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-size: 0.9rem;
+    }
+
+    /* Form styling */
+    input[type="text"], input[type="email"] {
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .contact-form-group.two-column > div {
+        width: 48%;
+    }
+
+    /* Button styles */
+    button {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #3BB77E;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #2a8f62;
+    }
+
+    /* Responsive Layout for Smaller Screens */
+    @media (max-width: 767px) {
+        .order-summary, .payment-methods, .delivery-address {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .order-summary img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .contact-form-group.two-column > div {
+            width: 100%;
+        }
+    }
+
+    /* Further adjustments for mobile devices */
+    @media (max-width: 576px) {
+        .container {
+            margin: 20px;
+            padding: 10px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+        }
+
+        .progress .step span {
+            font-size: 0.8rem;
+        }
+
+        .order-summary .item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        button {
+            font-size: 14px;
+            padding: 12px;
+        }
+    }
+
+
+ /* Header */
+ input, button {
+    font-family: "Quicksand", sans-serif;
+  }
+  .header {
+    background-color: #3BB77E;
+    padding: 15px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .logo img {
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .search-bar-container {
+    display: flex;
+    align-items: center;
+    width: 600px; /* Adjust this value to make the container smaller */
+  
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    flex: 2;
+    border: 1px solid #ccc; /* Optional: For better visibility of the search bar */
+   
+  }
+  
+  .search-bar select,
+  .search-bar input {
+    height: 39px; /* Slightly reduce the height for a smaller look */
+    border: none;
+    padding: 0 8px; /* Reduce padding */
+  }
+  
+  .search-bar select {
+    margin-right: -1px;
+    /* Slight overlap to connect input and select */
+  }
+  
+  .search-bar input {
+    flex: 1;
+  }
+  
+  .search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right:50px; /* Adjust spacing if needed */
+  }
+  
+  .icons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icons img {
+  
+    margin: 0 10px;
+    cursor: pointer;
+    height: 30px;
+    width: 28px;
+  }
+  
+  .profile-icon img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+  
+  }
+  
+  
+  #navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px 40px;
+    width: 100%;
+    height: 50px;
+    background-color: #3BB77E;
+    border: 0px solid #FFFFFF;
+    backdrop-filter: blur(15px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  .navbar-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .navbar-item img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .navbar-item h1 {
+    margin: 0;
+    font-size: 22px;
+    color: #ffffff;
+    white-space: nowrap;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    background-color: #F3F3F3;
+    padding: 5px 10px;
+    margin-left: 60px;
+  }
+  
+  .all-products-dropdown {
+    display: flex;
+    align-items: center;
+    color: black;
+    width: 200px;
+    height: 20px;
+    font-size: 12px;
+    margin-right: 5px;
+    justify-content: space-between;
+  }
+  
+  .all-products-dropdown .fas.fa-bars {
+    margin-right: 15px;
+  }
+  
+  .all-products-dropdown .fas.fa-chevron-down {
+    margin-left: auto;
+  }
+  
+  .separator {
+    margin: 0 5px;
+    color: black;
+  }
+  
+  .search-input-container {
+    background-color: #F3F3F3;
+    position: relative;
+    width: 400px;
+  }
+  
+  #search-input {
+    background-color: #F3F3F3;
+    width: 100%;
+    padding: 5px;
+    font-family: "Quicksand", sans-serif;
+    font-size: 12px;
+    border: none;
+    margin-left: 5px;
+  }
+  
+  .search-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 15px; 
+  }
+  
+  .search-button i {
+    font-size: 16px;
+    color: black;
+  }
+  
+  .search-button:hover {
+    background-color: #f2f2f2;
+  }
+  
+  .icon {
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    margin-left: 20px;
+  }
+  
+  .navbar-item a {
+    font-size: 12px;
+    color: #3BB77E;
+    text-decoration: none;
+    margin-left: 5px;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-right.navbar-item {
+    color: #3BB77E;
+    margin-right: 150px;
+    gap: 10px;
+  }
+  
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-icon {
+    margin-left: 5px;
+    font-size: 10px;
+    color: #000000;
+    cursor: pointer;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    color: black;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+    top: 100%;
+    left: 0;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #575757;
+    color: white;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown:hover .all-products-dropdown {
+    color: black;
+  }
+  
+  
+  .header {
+            background-color: #44b567;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+        }
+        .header a {
+            color: #fff;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        .header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header .logo img{
+            width: 50px;
+        }
+        .header .search {
+            display: flex;
+            align-items: center;
+        }
+        .header .search input {
+            padding: 5px;
+            border-radius: 3px;
+            border: none;
+            margin-right: 10px;
+        }
+
+/* Delivery Address and Order Summary */
+.delivery-address button,
+      .order-summary button {
+        background-color: #3BB77E;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      .delivery-address button:hover,
+      .order-summary button:hover {
+        background-color: #228B22;
+      }
+
+      .order-summary,
+      .delivery-address {
+        padding: 20px;
+        margin: 20px 0;
+        border: none;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+      }
+
+      .order-summary h4 {
+        margin-bottom: 20px;
+      }
+
+
+   /* Coupon Section Styling */
+.coupon-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.coupon-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.coupon-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coupon-input input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.coupon-input button {
+    width: 25%;
+    padding: 10px;
+    background-color: #3BB77E;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.coupon-input button:hover {
+    background-color: #2a8f62;
+}
+
+.coupon-message {
+    margin-top: 10px;
+    color: red;
+}
+
+.discount-info {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.discount-info div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .coupon-input {
+        flex-direction: column;
+    }
+
+    .coupon-input input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .coupon-input button {
+        width: 100%;
+    }
+}
+
+
+
+</style>
+
+
+</style>
+</head>
+<body>
+    
+
+    
+    <div class="header">
+        <div class="logo">
+            <a href="home.html">
+            <img src="assets/logo2.jpeg" alt="Logo" style="border-radius: 100px;">
+           </a>
+            <div class="location">
+                <i class="fa-solid fa-location-dot" style="color: #fff; font-size: 14px;"></i>
+                <span id="location-text">Your Location</span>
+                <span id="weather-report">Weather: Loading...</span>
+            </div>
+        </div>
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <select>
+                    <option>All Categories</option>
+                    <option>Vegetables</option>
+                    <option>Fruits</option>
+                    <option>Dairy</option>
+                </select>
+                <input type="text" placeholder="Search for products...">
+            </div>
+            <div class="search-icon">
+                <img src="assets/Search-btn.png" alt="Search">
+            </div>
+        </div>
+
+        <div class="icons">
+            <a href="wishlist2.html">
+            <img src="assets/Wishlist-1.png" alt="Wishlist">
+            </a>
+            <a href="cart.html">
+            <img src="assets/Cart-1.png" alt="Cart">
+            </a>
+            <div class="profile-icon">
+                <img src="assets/Profile.png" alt="Profile">
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    
+    <script src="navbar.js"></script>
+
+
+
+    
+
+
+    <div class="container">
+
+
+        
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div id="orderItems"></div>
+            <div class="summary">
+                <div>
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹950.00</span> <!-- Sample Subtotal -->
+                </div>
+                <div>
+                    <span>Sales tax (5%)</span>
+                    <span id="tax">₹50.00</span> <!-- Sample Tax -->
+                </div>
+                <div>
+                    <span>Shipping Fee</span>
+                    <span>FREE</span>
+                </div>
+                <div>
+                    <span>Total due</span>
+                    <span id="totalDue">₹1000.00</span> <!-- Sample Total -->
+                </div>
+            </div>
+        </div>
+    
+        <!-- New Coupon Section -->
+        <div class="coupon-section">
+            <h2>Apply Coupon</h2>
+            <div class="coupon-input">
+                <input type="text" id="couponCode" placeholder="Enter coupon code" />
+                <button onclick="applyCoupon()">Apply</button>
+            </div>
+            <div id="couponMessage" class="coupon-message hidden"></div>
+    
+            <!-- Discount and Final Price Display -->
+            <div class="discount-info hidden" id="discountInfo">
+                <div>
+                    <span>Discount Applied</span>
+                    <span id="discountRate">0%</span>
+                </div>
+                <div>
+                    <span>Final Total</span>
+                    <span id="finalTotal">₹1050.00</span> <!-- Initial Total same as totalDue -->
+                </div>
+            </div>
+        </div>
+<script src="coupon.js"></script>
+        
+
+        <div class="delivery-address">
+            <div class="progress">
+                <div class="step completed">
+                    <span>Delivery Address</span>
+                </div>
+                <div class="step tick">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="step">
+                    <span>Payment</span>
+                </div>
+            </div>
+            <h2>Contact Details</h2>
+            <div class="error hidden" id="error">Please fill out all required fields.</div>
+            <div class="contact-form-group two-column">
+                <div>
+                    <label>First Name</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div>
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" required>
+                </div>
+            </div>
+            <div class="contact-form-group">
+                <label>Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="contact-form-group">
+                <label>Phone Number</label>
+                <input type="text" id="phone" required>
+            </div>
+            <div class="contact-form-group">
+                <label>Flat/House no.</label>
+                <input type="text" id="houseNo" required>
+            </div>
+            <div class="contact-form-group">
+                <label>Address</label>
+                <input type="text" id="address" required>
+            </div>
+            <div class="contact-form-group two-column">
+                <div>
+                    <label>City</label>
+                    <input type="text" id="city" required>
+                </div>
+                <div>
+                    <label>State</label>
+                    <input type="text" id="state" required>
+                </div>
+            </div>
+            <div class="contact-form-group">
+                <label>Postal Code</label>
+                <input type="text" id="postalCode" required>
+            </div>
+            <div class="contact-form-group">
+                <label>Famous Landmark</label>
+                <input type="text" id="landmark">
+            </div>
+            <div>
+                <input type="checkbox" id="sameAddress">
+                <label>My shipping and billing address are the same</label>
+            </div>
+            <button onclick="validateAndContinue()">Continue</button>
+        </div>
+
+
+    
+
+
+
+        <div class="payment-methods hidden">
+            <div class="back-arrow" onclick="goToContactDetails()">
+                <i style="margin-right: 10px;" class="fas fa-arrow-left"></i> Back to Contact Details
+            </div>
+            <h2>Payment Methods</h2>
+            <div class="method">
+                <input type="radio" name="payment-method" id="pay-on-delivery" onclick="toggleCardDetails()">
+                <label for="pay-on-delivery">Pay on Delivery</label>
+            </div>
+            <div class="method">
+                <input type="radio" name="payment-method" id="credit-debit-card" onclick="toggleCardDetails()" checked>
+                <label for="credit-debit-card">Credit/Debit Cards</label>
+                <div class="card-details" id="cardDetails">
+                    <input type="text" placeholder="Card number" required>
+                    <div class="card-number">
+                        <input type="text" placeholder="MM / YY" required>
+                        <input type="text" placeholder="CVV" required>
+                    </div>
+                </div>
+            </div>
+            <div class="method">
+                <input type="radio" name="payment-method" id="bank-transfer" onclick="toggleCardDetails()">
+                <label for="bank-transfer">Direct Bank Transfer</label>
+            </div>
+            <div class="method">
+                <input type="radio" name="payment-method" id="other-methods" onclick="toggleCardDetails()">
+                <label for="other-methods">Other Payment Methods</label>
+            </div>
+            <button onclick="handlePayment()">Pay <span id="totalPay">₹0.00</span></button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItems = JSON.parse(localStorage.getItem('checkoutItems')) || [];
+            const orderItemsContainer = document.getElementById('orderItems');
+           
+
+            cartItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('item');
+
+                itemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="details">
+                        <p style="color:black";>${item.name}</p>
+                        <p class="price">₹${item.price.toFixed(2)} x ${item.quantity}</p>
+                    </div>
+                    <div>₹${(item.price * item.quantity).toFixed(2)}</div>
+                `;
+
+                orderItemsContainer.appendChild(itemElement);
+
+                subtotal += item.price * item.quantity;
+            });
+
+           
+            document.getElementById('subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `₹${tax.toFixed(2)}`;
+            document.getElementById('totalDue').textContent = `₹${totalDue.toFixed(2)}`;
+            document.getElementById('totalPay').textContent = `₹${totalDue.toFixed(2)}`;
+        });
+
+        function validateAndContinue() {
+            const requiredFields = document.querySelectorAll('.delivery-address input[required]');
+            let allFieldsFilled = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    allFieldsFilled = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = '#ccc';
+                }
+            });
+
+            if (allFieldsFilled) {
+                document.querySelector('.error').classList.add('hidden');
+                goToPayment();
+            } else {
+                document.querySelector('.error').classList.remove('hidden');
+            }
+        }
+
+        function goToPayment() {
+            document.querySelector('.delivery-address').classList.add('hidden');
+            document.querySelector('.payment-methods').classList.remove('hidden');
+            updateProgress('payment');
+        }
+
+        function goToContactDetails() {
+            document.querySelector('.payment-methods').classList.add('hidden');
+            document.querySelector('.delivery-address').classList.remove('hidden');
+            updateProgress('contact');
+        }
+
+        function updateProgress(step) {
+            const steps = document.querySelectorAll('.progress .step');
+            steps.forEach(s => {
+                s.classList.remove('completed', 'current');
+            });
+            if (step === 'contact') {
+                steps[0].classList.add('completed');
+                steps[1].classList.add('current');
+                steps[2].classList.remove('completed');
+            } else if (step === 'payment') {
+                steps[0].classList.add('completed');
+                steps[1].classList.add('completed');
+                steps[2].classList.add('current');
+            }
+        }
+
+        function toggleCardDetails() {
+            const cardDetails = document.getElementById('cardDetails');
+            const isCardSelected = document.getElementById('credit-debit-card').checked;
+
+            if (isCardSelected) {
+                cardDetails.style.display = 'flex';
+            } else {
+                cardDetails.style.display = 'none';
+            }
+        }
+
+        function handlePayment() {
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').nextElementSibling.textContent;
+            const totalDue = document.getElementById('totalPay').textContent;
+            const paymentTime = new Date().toLocaleString();
+            localStorage.setItem('paymentMethod', paymentMethod);
+            localStorage.setItem('totalDue', totalDue);
+            localStorage.setItem('paymentTime', paymentTime);
+            // Clear cart
+            localStorage.removeItem('checkoutItems');
+            window.location.href = 'orderconformation2.html';
+        }
+    </script>
+
+    
+<div class="container explore-section">
+    <div class="explore-header">
+        <p>Explore More Items</p>
+        <div class="explore-buttons">
+            <button class="explore-button">Best Seller</button>
+            <button class="explore-button">Featured</button>
+            <button class="explore-button">Discounted</button>
+        </div>
+       
+    </div>
+    <div class="categories">
+        <div class="category-list">
+            <div class="category-item">
+                <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_294/NI_CATALOG/IMAGES/CIW/2024/7/3/ee019487-1695-47d4-8aa6-905f86ccbcd0_10ee16a0-8c4e-4895-a76e-876e1e33a40e" alt="Vegetables">
+                <h5>Vegetables</h5>
+            </div>
+            <div class="category-item">
+                <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_294/NI_CATALOG/IMAGES/CIW/2024/7/3/dc7920a3-9186-4c16-b2f1-403d96afb92a_7d9566ae-b745-4ef3-8c25-03689c5a75a7" alt="Fruits">
+                <h5>Fruits</h5>
+            </div>
+            <div class="category-item">
+                <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_294/NI_CATALOG/IMAGES/CIW/2024/7/23/4abc4052-ccd8-4b56-8b75-f93687c15c16_dabee874-2165-4169-9ee9-4fde76038b40" alt="Dairy">
+                <h5>Dairy</h5>
+            </div>
+            <div class="category-item">
+                <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_294/NI_CATALOG/IMAGES/CIW/2024/7/3/6f3cc591-0f38-4d08-ae8d-e8d79b3fc830_132ae994-8b1b-4dc5-b845-90a78fd14f3b" alt="Bakery">
+                <h5>Bakery</h5>
+            </div>
+            <div class="category-item">
+                <img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_96/NI_CATALOG/IMAGES/CIW/2024/3/9/b11388c9-f64b-44d4-a179-830b1d506103_e1ffae9d-3ab4-4207-a524-d139618a9b15" alt="Meat">
+                <h5>Meat</h5>
+            </div>
+            <div class="category-item">
+                <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_294/NI_CATALOG/IMAGES/CIW/2024/7/3/0e336513-85bc-4ea5-a165-6dee4c0df64b_559a33f6-a49b-4511-8904-a34f7aae74a0" alt="Seafood">
+                <h5>Seafood</h5>
+            </div>
+            <div class="category-item">
+                <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_294/NI_CATALOG/IMAGES/CIW/2024/7/3/24675341-d82c-4ffd-b4a7-fc93eb676688_d8a17acd-e4bc-4539-9507-1e269d9aefda" alt="Snacks">
+                <h5>Snacks</h5>
+            </div>
+            <div class="category-item">
+                <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_294/NI_CATALOG/IMAGES/CIW/2024/7/18/84e4f7d5-03ab-42e2-8765-e05ecfd9d925_212a82ac-67ed-4ff1-b471-ee622b71d404" alt="Beverages">
+                <h5>Beverages</h5>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="footer.js"></script>
+</body>
+</html>
