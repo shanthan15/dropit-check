@@ -25,7 +25,28 @@ function applyCoupon() {
         couponMessage.style.color = "green";
         couponMessage.classList.remove("hidden");
 
-    } else {
+    } else if (couponCode === "SAVE50") {
+        discount = 0.5; // 50% discount
+        couponMessage.innerHTML = "Coupon applied! You saved 50%.";
+        couponMessage.style.color = "green";
+        couponMessage.classList.remove("hidden");
+
+    } else if (couponCode === "SAVE90") {
+        discount = 0.9; // 90% discount
+        couponMessage.innerHTML = "Coupon applied! You saved 90%.";
+        couponMessage.style.color = "green";
+        couponMessage.classList.remove("hidden");
+
+    } else if (couponCode === "WELCOME40") {
+        discount = 0.4; // 40% discount for new customers
+        couponMessage.innerHTML = "Coupon applied! Welcome! You saved 40%.";
+        couponMessage.style.color = "green";
+        couponMessage.classList.remove("hidden");
+    
+    
+    
+    
+    }else {
         couponMessage.innerHTML = "Invalid coupon code.";
         couponMessage.style.color = "red";
         couponMessage.classList.remove("hidden");
